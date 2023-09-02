@@ -16,7 +16,12 @@
     "eslint-plugin-jsdoc": "^46.5.1"
   },
   "dependencies": {
+    "get-twitter-media": "^2.0.6",
+    "open-graph-scraper": "^6.2.2",
     "pg": "^8.11.3",
-    "pg-listen": "^1.7.0"
+    "pg-listen": "^1.7.0",
+    "puppeteer": "^21.1.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }

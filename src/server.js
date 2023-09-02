@@ -13,8 +13,8 @@ let queueAlreadyAdded = new Set();
 // Commands
 const COMMANDS = {
     'preview': async data => {
-        console.log('Processing', data)
-    },
+        console.log('Processing', data);
+    }
 };
 
 // Create clients
@@ -29,6 +29,7 @@ async function processQueue() {
         const toProcess = queue.shift();
         const cmd = toProcess.name;
 
+        // TODO: try catch
         await (COMMANDS[cmd] || (async () => {
             console.error(`Command ${cmd} does not exist`);
         }))(toProcess.data);
