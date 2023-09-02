@@ -1,8 +1,8 @@
 import { waitTillHTMLRendered, getBrowserAndPage } from '../node_save/puppeteer_util.js';
 import { createDirIfNotExist } from '../util/file.js';
 import { fileDir } from '../../config.js';
+import { validateUrl } from '../util/url.js';
 import path from 'path';
-
 
 /**
  * Save a webpage as a PDF
@@ -29,5 +29,6 @@ export async function downloadPdf(url, dest) {
  * @param {object} client DB Client
  */
 export async function commandPdf(data, client) {
+    validateUrl(data.data);
     await downloadPdf(data.data, path.join(fileDir, data.id + '.pdf'));
 }

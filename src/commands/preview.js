@@ -1,4 +1,5 @@
 import ogs from 'open-graph-scraper';
+import { validateUrl } from '../util/url.js';
 
 const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36';
 
@@ -38,5 +39,5 @@ export async function downloadPreview(url) {
  * @param {object} client DB Client
  */
 export async function commandPreview(data, client) {
-    
+    validateUrl(data.data);
 }
