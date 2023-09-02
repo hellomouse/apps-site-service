@@ -6,6 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "type": "module",
   "author": "Bowserinator",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.22.11",
+    "@hellomouse/eslint-config": "^1.1.5",
+    "eslint": "^8.48.0",
+    "eslint-plugin-jsdoc": "^46.5.1"
+  },
+  "dependencies": {
+    "pg": "^8.11.3",
+    "pg-listen": "^1.7.0"
+  }
 }
