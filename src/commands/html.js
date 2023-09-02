@@ -1,6 +1,8 @@
 
 import { scrape } from '../node_save/nodeSavePageWE.js';
 import { createDirIfNotExist } from '../util/file.js';
+import { fileDir } from '../../config.js';
+import path from 'path';
 
 /**
  * Save a webpage as a HTML
@@ -13,4 +15,13 @@ export async function downloadHtml(url, dest) {
         url: url,
         path: dest
     });
+}
+
+/**
+ * Command to export
+ * @param {object} data Data from DB
+ * @param {object} client DB Client
+ */
+export async function commandHtml(data, client) {
+    await downloadHtml(data.data, path.join(fileDir, data.id + '.html'));
 }

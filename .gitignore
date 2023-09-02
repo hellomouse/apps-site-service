@@ -2,6 +2,7 @@
 .vscode
 TODO.txt
 config.js
+saves/
 
 # Logs
 logs

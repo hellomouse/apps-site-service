@@ -31,3 +31,12 @@ export async function downloadPreview(url) {
     }
     return { error: true };
 }
+
+/**
+ * Command to export
+ * @param {object} data Data from DB
+ * @param {object} client DB Client
+ */
+export async function commandPreview(data, client) {
+    
+}

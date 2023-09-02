@@ -3,3 +3,5 @@ export const dbIp = '127.0.0.1';
 export const dbPort = 5433;
 export const dbPassword = 'my password';
 export const dbName = 'hellomouse_board';
+
+export const fileDir = './saves';

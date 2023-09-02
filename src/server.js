@@ -2,6 +2,10 @@ import createSubscriber from 'pg-listen';
 import pg from 'pg';
 import { dbUser, dbPassword, dbIp, dbPort, dbName } from '../config.js';
 
+import { commandHtml } from './commands/html.js';
+import { commandPdf } from './commands/pdf.js';
+import { commandPreview } from './commands/preview.js';
+
 const CHANNEL = 'hellomouse_apps_site_update'; // Should match NOTIFY on rust side
 const connectionString = `postgresql://${dbUser}:${dbPassword}@${dbIp}:${dbPort}/${dbName}`;
 
@@ -12,15 +16,9 @@ let queueAlreadyAdded = new Set();
 
 // Commands
 const COMMANDS = {
-    'preview': async data => {
-        console.log('Processing', data);
-    },
-    'pdf': async data => {
-
-    },
-    'html': async data => {
-
-    },
+    'preview': commandPreview,
+    'pdf': commandPdf
+    'html': commandHtml,
     'special': async data => {
 
     }
@@ -41,7 +39,7 @@ async function processQueue() {
         // TODO: try catch
         await (COMMANDS[cmd] || (async () => {
             console.error(`Command ${cmd} does not exist`);
-        }))(toProcess.data);
+        }))(toProcess, client);
 
         queueAlreadyAdded.delete(toProcess.id);
         await client.query('DELETE FROM site.queue WHERE id = $1;', [toProcess.id]);
