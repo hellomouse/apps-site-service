@@ -1,4 +1,5 @@
 import { waitTillHTMLRendered, getBrowserAndPage } from '../node_save/puppeteer_util.js';
+import { createDirIfNotExist } from '../util/file.js';
 
 /**
  * Save a webpage as a PDF
@@ -9,6 +10,7 @@ export async function downloadPdf(url, dest) {
     const { browser, page } = await getBrowserAndPage();
     await page.goto(url, { timeout: 40000, waitUntil: ['networkidle0'] });
     await waitTillHTMLRendered(page);
+    createDirIfNotExist(dest);
     await page.pdf({
         path: dest,
         format: 'A4',

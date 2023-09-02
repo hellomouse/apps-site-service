@@ -14,6 +14,15 @@ let queueAlreadyAdded = new Set();
 const COMMANDS = {
     'preview': async data => {
         console.log('Processing', data);
+    },
+    'pdf': async data => {
+
+    },
+    'html': async data => {
+
+    },
+    'special': async data => {
+
     }
 };
 
