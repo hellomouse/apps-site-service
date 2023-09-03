@@ -60,8 +60,6 @@ export async function commandPinPreview(data, client) {
     newContent[4] = preview.desc;
     newContent = newContent.join('\n');
 
-    console.log(pinId, url);
-
     if (preview.image)
         await downloadImage(preview.image, { width: 60, height: 60 },
             path.join(fileDir, 'thumb', data.id + '.webp'));

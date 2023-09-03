@@ -17,12 +17,14 @@
   },
   "dependencies": {
     "get-twitter-media": "^2.0.6",
+    "logging": "^3.3.0",
     "open-graph-scraper": "^6.2.2",
     "pg": "^8.11.3",
     "pg-listen": "^1.7.0",
     "puppeteer": "^21.1.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "sharp": "^0.32.5"
+    "sharp": "^0.32.5",
+    "simple-node-logger": "^21.8.12"
   }
 }

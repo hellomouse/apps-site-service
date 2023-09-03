@@ -1,13 +1,15 @@
 import createSubscriber from 'pg-listen';
 import pg from 'pg';
-import { dbUser, dbPassword, dbIp, dbPort, dbName } from '../config.js';
+import log from 'simple-node-logger';
 
+import { dbUser, dbPassword, dbIp, dbPort, dbName } from '../config.js';
 import { commandHtml } from './commands/html.js';
 import { commandPdf } from './commands/pdf.js';
 import { commandPinPreview } from './commands/preview.js';
 
 const CHANNEL = 'hellomouse_apps_site_update'; // Should match NOTIFY on rust side
 const connectionString = `postgresql://${dbUser}:${dbPassword}@${dbIp}:${dbPort}/${dbName}`;
+const logger = log.createSimpleLogger();
 
 // Queue
 const queue = [];
@@ -35,13 +37,14 @@ async function processQueue() {
     while (queue.length > 0) {
         const toProcess = queue.shift();
         const cmd = toProcess.name;
+        logger.info(`Processing command ${cmd} ${toProcess.data} from ${toProcess.requestor}`);
 
         try {
             await (COMMANDS[cmd] || (async () => {
-                console.error(`Command ${cmd} does not exist`);
+                logger.error(`Command ${cmd} does not exist`);
             }))(toProcess, client);
         } catch (e) {
-            console.error(e);
+            logger.warn(e);
         }
 
         queueAlreadyAdded.delete(toProcess.id);
@@ -68,7 +71,7 @@ subscriber.notifications.on(CHANNEL, async () => {
 });
 
 subscriber.events.on('error', error => {
-    console.error('Fatal database connection error:', error);
+    logger.error('Fatal database connection error:', error);
     process.exit(1);
 });
 
@@ -83,6 +86,7 @@ async function connect() {
     await client.connect();
     await subscriber.connect();
     await subscriber.listenTo(CHANNEL);
+    logger.info('Connected to DB, listening...');
     updateQueue();
 }
 
