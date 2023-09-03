@@ -49,7 +49,7 @@ async function processQueue() {
 
 /** Add from DB to the queue */
 async function updateQueue() {
-    const rows = (await client.query('SELECT * FROM site.queue ORDER BY created;')).rows;
+    const rows = (await client.query(`SELECT * FROM site.queue ORDER BY priority desc, created asc;`)).rows;
     if (!rows || rows.length === 0) return;
 
     for (let row of rows) // TODO: don't duplicate
