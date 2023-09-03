@@ -1,5 +1,5 @@
 import ogs from 'open-graph-scraper';
-import { validateUrl, downloadImage } from '../util/url.js';
+import { validateUrl, downloadImage, urlHash } from '../util/url.js';
 import { fileDir } from '../../config.js';
 import path from 'path';
 
@@ -62,7 +62,7 @@ export async function commandPinPreview(data, client) {
 
     if (preview.image)
         await downloadImage(preview.image, { width: 60, height: 60 },
-            path.join(fileDir, 'thumb', data.id + '.webp'));
+            path.join(fileDir, 'thumb', urlHash(url) + '.webp'));
 
     let result = await client.query('UPDATE board.pins SET content = $2 WHERE id = $1;', [pinId, newContent]);
     if (result.rowCount < 1) throw new Error('Failed to update pin, maybe it was deleted');

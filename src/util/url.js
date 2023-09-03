@@ -34,3 +34,21 @@ export async function downloadImage(url, size, dest) {
     createDirIfNotExist(dest);
     await fs.writeFile(dest, imageBuff, () => {});
 }
+
+/**
+ * Returns a hash code from a string, should be same as
+ * the client's hash function
+ * @param  {String} str The string to hash.
+ * @return {String}     Hash of url
+ * @see http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+ */
+export function urlHash(str) {
+    let hash = 0;
+    for (let i = 0, len = str.length; i < len; i++) {
+        let chr = str.charCodeAt(i);
+        hash = (hash << 5) - hash + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    let u = str.split('://')[1];
+    return u.replace(/[^A-Za-z0-9_-]/g, '').substring(0, 210) + hash;
+}
