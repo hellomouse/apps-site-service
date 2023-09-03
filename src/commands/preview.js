@@ -30,7 +30,7 @@ export async function downloadPreview(url) {
             image: result.ogImage ? result.ogImage[0]?.url : ''
         };
     }
-    return { error: true };
+    throw new Error('Failed to get');
 }
 
 /**
@@ -38,6 +38,28 @@ export async function downloadPreview(url) {
  * @param {object} data Data from DB
  * @param {object} client DB Client
  */
-export async function commandPreview(data, client) {
-    validateUrl(data.data);
+export async function commandPinPreview(data, client) {
+    // Format of data.data: pin uuid|url
+    const splitIndex = data.data.indexOf('|'); // Split on first |
+    const url = data.data.substring(splitIndex + 1);
+    const pinId = data.data.substring(0, splitIndex);
+
+    validateUrl(url);
+    const preview = await downloadPreview(url);
+
+    const pin = (await client.query('SELECT * FROM board.pins WHERE id = $1;', [pinId])).rows[0];
+    if (!pin) return;
+
+    let newContent = pin.content.split('\n');
+    while (newContent.length < 5)
+        newContent.push('');
+    newContent[2] = preview.image;
+    newContent[3] = preview.title;
+    newContent[4] = preview.desc;
+    newContent = newContent.join('\n');
+
+    console.log(pinId, url);
+
+    let result = await client.query('UPDATE board.pins SET content = $2 WHERE id = $1;', [pinId, newContent]);
+    if (result.rowCount < 1) throw new Error('Failed to update pin, maybe it was deleted');
 }

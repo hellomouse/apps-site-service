@@ -4,7 +4,7 @@ import { dbUser, dbPassword, dbIp, dbPort, dbName } from '../config.js';
 
 import { commandHtml } from './commands/html.js';
 import { commandPdf } from './commands/pdf.js';
-import { commandPreview } from './commands/preview.js';
+import { commandPinPreview } from './commands/preview.js';
 
 const CHANNEL = 'hellomouse_apps_site_update'; // Should match NOTIFY on rust side
 const connectionString = `postgresql://${dbUser}:${dbPassword}@${dbIp}:${dbPort}/${dbName}`;
@@ -16,8 +16,8 @@ let queueAlreadyAdded = new Set();
 
 // Commands
 const COMMANDS = {
-    'preview': commandPreview,
-    'pdf': commandPdf
+    'pin_preview': commandPinPreview,
+    'pdf': commandPdf,
     'html': commandHtml,
     'special': async data => {
 
