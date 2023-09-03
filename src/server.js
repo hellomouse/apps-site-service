@@ -36,10 +36,13 @@ async function processQueue() {
         const toProcess = queue.shift();
         const cmd = toProcess.name;
 
-        // TODO: try catch
-        await (COMMANDS[cmd] || (async () => {
-            console.error(`Command ${cmd} does not exist`);
-        }))(toProcess, client);
+        try {
+            await (COMMANDS[cmd] || (async () => {
+                console.error(`Command ${cmd} does not exist`);
+            }))(toProcess, client);
+        } catch (e) {
+            console.error(e);
+        }
 
         queueAlreadyAdded.delete(toProcess.id);
         await client.query('DELETE FROM site.queue WHERE id = $1;', [toProcess.id]);
