@@ -8,5 +8,5 @@ import path from 'path';
 export function createDirIfNotExist(dir) {
     dir = path.dirname(dir);
     if (!fs.existsSync(dir))
-        fs.mkdirSync(dir);
+        fs.mkdirSync(dir, { recursive: true });
 }
