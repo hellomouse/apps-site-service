@@ -21,7 +21,7 @@ export async function isSoundCloud(url) {
  * @param {string} dest Destination folder path to save sound and html file
  * @param {string} id Id to save file names as
  */
-export async function downloadSound(url, dest, id) {
+export async function downloadSoundCloud(url, dest, id) {
     const client = new SoundCloud.Client();
     createDirIfNotExist(path.join(dest, 'tmp.tmp'));
 
