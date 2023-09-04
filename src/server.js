@@ -21,7 +21,7 @@ const COMMANDS = {
     'pin_preview': commandPinPreview,
     'pdf': commandPdf,
     'html': commandHtml,
-    'special': async data => {
+    'media': async data => {
 
     }
 };
@@ -39,16 +39,28 @@ async function processQueue() {
         const cmd = toProcess.name;
         logger.info(`Processing command ${cmd} ${toProcess.data} from ${toProcess.requestor}`);
 
+        await client.query('UPDATE site.status SET status = $1 WHERE id = $2;',
+            ['processing', toProcess.id]);
+        let errored = false;
+
         try {
             await (COMMANDS[cmd] || (async () => {
                 logger.error(`Command ${cmd} does not exist`);
             }))(toProcess, client);
         } catch (e) {
             logger.warn(e);
+            errored = true;
         }
 
         queueAlreadyAdded.delete(toProcess.id);
         await client.query('DELETE FROM site.queue WHERE id = $1;', [toProcess.id]);
+        await client.query('UPDATE site.status SET finished = $1, status = $2 WHERE id = $3;',
+            [
+                new Date(),
+                !errored ? 'completed' : 'errored',
+                toProcess.id
+            ]
+        );
     }
     queueRunning = false;
 }
@@ -64,6 +76,11 @@ async function updateQueue() {
             queue.push(row);
         }
     processQueue();
+}
+
+/** Clear finished tasks older than 1 hour */
+async function clearOldFinishedTasks() {
+    await client.query(`DELETE FROM site.status WHERE (status = 'errored' OR status = 'completed') AND finished < now() - interval '1 hour';`);
 }
 
 subscriber.notifications.on(CHANNEL, async () => {
@@ -88,6 +105,7 @@ async function connect() {
     await subscriber.listenTo(CHANNEL);
     logger.info('Connected to DB, listening...');
     updateQueue();
+    setInterval(clearOldFinishedTasks, 10 * 60 * 1000); // Clear old finished tasks every 10 min
 }
 
 connect();

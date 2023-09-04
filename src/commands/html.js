@@ -26,5 +26,5 @@ export async function downloadHtml(url, dest) {
  */
 export async function commandHtml(data, client) {
     validateUrl(data.data);
-    await downloadHtml(data.data, path.join(fileDir, data.id + '.html'));
+    await downloadHtml(data.data, path.join(fileDir, 'site_downloads', data.id + '.html'));
 }

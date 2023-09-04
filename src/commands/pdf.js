@@ -30,5 +30,5 @@ export async function downloadPdf(url, dest) {
  */
 export async function commandPdf(data, client) {
     validateUrl(data.data);
-    await downloadPdf(data.data, path.join(fileDir, data.id + '.pdf'));
+    await downloadPdf(data.data, path.join(fileDir, 'site_downloads', data.id + '.pdf'));
 }
