@@ -18,6 +18,7 @@
   "dependencies": {
     "get-twitter-media": "^2.0.6",
     "html-minifier": "^4.0.0",
+    "imgur-anon": "^2.3.0",
     "logging": "^3.3.0",
     "node-fetch": "^3.3.2",
     "open-graph-scraper": "^6.2.2",
