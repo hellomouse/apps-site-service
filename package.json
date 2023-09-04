@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "get-twitter-media": "^2.0.6",
+    "html-minifier": "^4.0.0",
     "logging": "^3.3.0",
     "open-graph-scraper": "^6.2.2",
     "pg": "^8.11.3",
@@ -25,6 +26,7 @@
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "sharp": "^0.32.5",
-    "simple-node-logger": "^21.8.12"
+    "simple-node-logger": "^21.8.12",
+    "soundcloud-scraper": "^5.0.3"
   }
 }
