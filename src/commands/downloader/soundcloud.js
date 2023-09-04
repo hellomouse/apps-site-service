@@ -2,6 +2,7 @@ import SoundCloud from 'soundcloud-scraper';
 import fs from 'fs';
 import path from 'path';
 import minifier from 'html-minifier';
+import https from 'https';
 
 import { createDirIfNotExist } from '../../util/file.js';
 
@@ -29,10 +30,20 @@ export async function downloadSoundCloud(url, dest, id) {
     const stream = await song.downloadProgressive();
     await stream.pipe(fs.createWriteStream(path.join(dest, id + '.mp3')));
 
+    let imgSrc = new Promise((resolve, reject) => https.get(song.thumbnail, resp => {
+        let data = [];
+        resp.on('data', chunk => data.push(Buffer.from(chunk, 'binary')));
+        resp.on('end', () => resolve(
+            'data:' + resp.headers['content-type'] + ';base64,' + Buffer.concat(data).toString('base64')
+        ));
+    }));
+    imgSrc = await imgSrc;
+
     let HTML = `
 <!DOCTYPE HTML>
 <html>
     <head>
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>SoundCloud Backup - ${song.title}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -118,7 +129,7 @@ h3 {
             <span class="composer"><a href="${song.author.url}">${song.author.name} (@${song.author.username})</a></span><br>
 
             <div class="thumbnail">
-                <img src="${song.thumbnail}" />
+                <img src="${imgSrc}" />
             </div>
             <audio controls>
                 <source src="${id + '.mp3'}"  type= "audio/mp3"> </source>
@@ -158,7 +169,8 @@ h3 {
         removeOptionalTags: true,
         minifyCSS: true,
         collapseBooleanAttributes: true,
-        collapseWhitespace: true
+        collapseWhitespace: true,
+        decodeEntities: true
     });
 
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
