@@ -52,3 +52,27 @@ export function urlHash(str) {
     let u = str.split('://')[1];
     return u.replace(/[^A-Za-z0-9_-]/g, '').substring(0, 210) + hash;
 }
+
+/**
+ * Escape html
+ * @param {string} text Text to escape
+ * @return {string} Text with escaped HTML
+ */
+export function escapeHtml(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+/**
+ * Convert urls in text to <a> tags
+ * @param {string} text Text
+ * @return {string} Converted
+ */
+export function linkify(text) {
+    const exp = /(\b((https?|ftp|file):\/\/|(www))[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)/ig;
+    return text.replace(exp, '<a href=\'$1\'>$1</a>');
+}
