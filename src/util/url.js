@@ -1,5 +1,6 @@
 import sharp from 'sharp';
 import fs from 'fs';
+import minifier from 'html-minifier';
 import { createDirIfNotExist } from './file.js';
 
 /**
@@ -75,4 +76,20 @@ export function escapeHtml(text) {
 export function linkify(text) {
     const exp = /(\b((https?|ftp|file):\/\/|(www))[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)/ig;
     return text.replace(exp, '<a href=\'$1\'>$1</a>');
+}
+
+/**
+ * Minify html
+ * @param {string} html HTML
+ * @return {string} Minified html
+ */
+export function minifyHTML(html) {
+    return minifier.minify(html, {
+        removeComments: true,
+        removeOptionalTags: true,
+        minifyCSS: true,
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        decodeEntities: true
+    });
 }

@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import minifier from 'html-minifier';
 import fetch from 'node-fetch';
 import https from 'https';
 
+import { minifyHTML } from '../../util/url.js';
 import { createDirIfNotExist } from '../../util/file.js';
 
 /**
@@ -96,13 +96,7 @@ h1 {
         </div>
     </body>
 </html>`;
-    HTML = minifier.minify(HTML, {
-        removeComments: true,
-        removeOptionalTags: true,
-        minifyCSS: true,
-        collapseBooleanAttributes: true,
-        collapseWhitespace: true
-    });
+    HTML = minifyHTML(HTML);
 
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
 }

@@ -1,9 +1,9 @@
 import SoundCloud from 'soundcloud-scraper';
 import fs from 'fs';
 import path from 'path';
-import minifier from 'html-minifier';
 import https from 'https';
 
+import { minifyHTML } from '../../util/url.js';
 import { createDirIfNotExist } from '../../util/file.js';
 
 /**
@@ -164,14 +164,7 @@ h3 {
         </div>
     </body>
 </html>`;
-    HTML = minifier.minify(HTML, {
-        removeComments: true,
-        removeOptionalTags: true,
-        minifyCSS: true,
-        collapseBooleanAttributes: true,
-        collapseWhitespace: true,
-        decodeEntities: true
-    });
+    HTML = minifyHTML(HTML);
 
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
 }

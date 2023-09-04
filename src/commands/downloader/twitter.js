@@ -1,10 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import minifier from 'html-minifier';
 
 import getTwitterMedia from '../../util/twitter.js';
 import { createDirIfNotExist } from '../../util/file.js';
-import { escapeHtml, linkify } from '../../util/url.js';
+import { escapeHtml, linkify, minifyHTML } from '../../util/url.js';
 
 /**
  * Is a url a valid twitter url?
@@ -77,14 +76,7 @@ img, video { width: 100%; display: block; margin-bottom: 5px; }
         </div>
     </body>
 </html>`;
-    HTML = minifier.minify(HTML, {
-        removeComments: true,
-        removeOptionalTags: true,
-        minifyCSS: true,
-        collapseBooleanAttributes: true,
-        collapseWhitespace: true,
-        decodeEntities: true
-    });
+    HTML = minifyHTML(HTML);
 
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
 }
