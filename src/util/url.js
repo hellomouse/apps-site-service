@@ -68,13 +68,29 @@ export function escapeHtml(text) {
         .replace(/'/g, '&#039;');
 }
 
+
+/**
+ * Unescape html
+ * @param {string} text Text to unescape
+ * @return {string} Text with unescaped HTML
+ */
+export function unescapeHtml(text) {
+    return text
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#039;', '\'');
+}
+
+
 /**
  * Convert urls in text to <a> tags
  * @param {string} text Text
  * @return {string} Converted
  */
 export function linkify(text) {
-    const exp = /(\b((https?|ftp|file):\/\/|(www))[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]*)/ig;
+    const exp = /(\b((https?|ftp|file):\/\/|(www))[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|]*)/ig;
     return text.replace(exp, '<a href=\'$1\'>$1</a>');
 }
 
