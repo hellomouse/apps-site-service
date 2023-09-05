@@ -6,6 +6,60 @@ import fetch from 'node-fetch';
 import { createDirIfNotExist } from '../../util/file.js';
 import { minifyHTML, unescapeHtml } from '../../util/url.js';
 
+const HEAD = `<meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Reddit Backup</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+        <style>
+body {
+    background: black;
+}
+.container {
+    background: #1a1a1b;
+    border: 1px solid #343536;
+    max-width: 95%;
+    box-sizing: border-box;
+    padding: 20px;
+    width: 600px;
+    color: #D7DADC;
+    margin: 0 auto;
+    font-size: 13px;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+.spoiler { position: relative; }
+.spoiler::after {
+    content: 'SPOILER';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: black;
+    text-align: center;
+    padding-top: 50%;
+    cursor: pointer;
+    font-size: 2rem;
+    box-sizing: border-box;
+}
+.top { font-size: 0.75rem; margin: 0; margin-bottom: 4px; }
+.rest { opacity: 0.7; }
+h1 { margin: 0; font-size: 1.15rem; }
+a { color: #4fbcff; }
+code, pre { background: #272729; color: #5291f8; }
+.stats { opacity: 0.7; font-size: 0.75rem; }
+video { max-height: 400px; }
+img { max-height: 700px; }
+video, img {
+    display: block;
+    margin: 10px auto;
+    background: black;
+    width: 100%;
+    object-fit: contain;
+}
+.badges { margin: 0; margin-top: 5px; }
+.badges > span { border: 1px solid #343536; opacity: 0.7; padding: 2px 4px; margin-right: 2px; }
+.badges > span.nsfw { color:red; border-color: red; opacity: 1; }
+        </style>`;
+
 /**
  * Is a url a valid reddit post url?
  * @param {string} url URL
@@ -13,6 +67,15 @@ import { minifyHTML, unescapeHtml } from '../../util/url.js';
  */
 export async function isRedditPost(url) {
     return /^https:\/\/www\.reddit\.com\/r\/.+?\/comments\/.+?\/.+?\/$/g.test(url);
+}
+
+/**
+ * Is a url a valid reddit comment url?
+ * @param {string} url URL
+ * @return {boolean} is the result reddit
+ */
+export async function isRedditComment(url) {
+    return /^https:\/\/www\.reddit\.com\/r\/.+?\/comments\/.+?\/comment\/.+?\/.+?$/g.test(url);
 }
 
 /**
@@ -71,59 +134,7 @@ export async function downloadRedditPost(url, dest, id) {
 <!DOCTYPE HTML>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Reddit Backup</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
-        <style>
-body {
-    background: black;
-}
-.container {
-    background: #1a1a1b;
-    border: 1px solid #343536;
-    max-width: 95%;
-    box-sizing: border-box;
-    padding: 20px;
-    width: 600px;
-    color: #D7DADC;
-    margin: 0 auto;
-    font-size: 13px;
-    font-family: 'IBM Plex Sans', sans-serif;
-}
-.spoiler { position: relative; }
-.spoiler::after {
-    content: 'SPOILER';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: black;
-    text-align: center;
-    padding-top: 50%;
-    cursor: pointer;
-    font-size: 2rem;
-    box-sizing: border-box;
-}
-.top { font-size: 0.75rem; margin: 0; margin-bottom: 4px; }
-.rest { opacity: 0.7; }
-h1 { margin: 0; font-size: 1.15rem; }
-a { color: #4fbcff; }
-code, pre { background: #272729; color: #5291f8; }
-.stats { opacity: 0.7; font-size: 0.75rem; }
-video { max-height: 400px; }
-img { max-height: 700px; }
-video, img {
-    display: block;
-    margin: 10px auto;
-    background: black;
-    width: 100%;
-    object-fit: contain;
-}
-.badges { margin: 0; margin-top: 5px; }
-.badges > span { border: 1px solid #343536; opacity: 0.7; padding: 2px 4px; margin-right: 2px; }
-.badges > span.nsfw { color:red; border-color: red; opacity: 1; }
-        </style>
+        ${HEAD}
     </head>
     <body>
         <div class="container">
@@ -147,6 +158,40 @@ video, img {
             let m = document.getElementById('m');
             m.addEventListener('click', () => m.classList.remove('spoiler'))
         </script>` : ''}
+    </body>
+</html>`;
+    HTML = minifyHTML(HTML);
+    fs.writeFileSync(path.join(dest, id + '.html'), HTML);
+}
+
+/**
+ * Download a comment from reddit
+ * @param {string} url URL of reddit comment
+ * @param {string} dest Destination folder path to save sound and html file
+ * @param {string} id Id to save file names as
+ */
+export async function downloadRedditComment(url, dest, id) {
+    if (url.endsWith('/'))
+        url = url.substring(0, url.length - 1);
+    const response = await fetch('https://api.reddit.com/api/info/?id=t1_' + url.split('/').at(-2));
+    let data = await response.json();
+    data = data.data.children[0].data;
+
+    createDirIfNotExist(path.join(dest, 'tmp.tmp'));
+
+    let HTML = `
+<!DOCTYPE HTML>
+<html>
+    <head>${HEAD}</head>
+    <body>
+        <div class="container">
+            <p class="top"><b>${data.subreddit_name_prefixed}</b> <span class="rest">Comment by u/${data.author || '[deleted]'} on ${(new Date(data.created * 1000)).toLocaleString('en-US')}</span></p>
+            ${unescapeHtml(data.body_html || '')}
+            <div class="stats">
+                +${data.ups} / -${data.downs} / Original comment can be found <a href="${data.permalink}">here</a> /
+                This Reddit comment was archived by Hellomouse Apps
+            </div>
+        </div>
     </body>
 </html>`;
     HTML = minifyHTML(HTML);
