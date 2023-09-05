@@ -9,6 +9,8 @@ import { commandScreenshot } from './commands/screenshot.js';
 import { commandPinPreview } from './commands/preview.js';
 import { commandMedia } from './commands/special_download.js';
 
+import { errorDoNothing, errorPdf, errorScreenshot, errorHtml } from './commands/errors.js';
+
 const CHANNEL = 'hellomouse_apps_site_update'; // Should match NOTIFY on rust side
 const connectionString = `postgresql://${dbUser}:${dbPassword}@${dbIp}:${dbPort}/${dbName}`;
 const logger = log.createSimpleLogger();
@@ -25,6 +27,14 @@ const COMMANDS = {
     'html': commandHtml,
     'screenshot': commandScreenshot,
     'media': commandMedia
+};
+
+const COMMAND_ERROR = {
+    'pin_preview': errorDoNothing,
+    'pdf': errorPdf,
+    'html': errorHtml,
+    'screenshot': errorScreenshot,
+    'media': errorHtml
 };
 
 // Create clients
@@ -49,6 +59,10 @@ async function processQueue() {
                 logger.error(`Command ${cmd} does not exist`);
             }))(toProcess, client);
         } catch (e) {
+            await (COMMAND_ERROR[cmd] || (async () => {
+                logger.error(`Command error ${cmd} does not exist`);
+            }))(toProcess, client);
+
             logger.warn(e);
             errored = true;
         }
