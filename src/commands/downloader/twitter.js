@@ -11,7 +11,7 @@ import { escapeHtml, linkify, minifyHTML } from '../../util/url.js';
  * @param {string} url URL
  * @return {boolean} is the result twitter
  */
-export async function isTwitter(url) {
+export function isTwitter(url) {
     if (url.endsWith('/')) url = url.substring(0, url.length - 1);
     return /^https:\/\/twitter\.com\/.+?\/status\/\d+\?*[A-Za-z0-9=_-]*$/g.test(url);
 }

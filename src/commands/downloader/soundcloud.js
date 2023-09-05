@@ -11,7 +11,7 @@ import { createDirIfNotExist } from '../../util/file.js';
  * @param {string} url URL
  * @return {boolean} is the result sound cloud
  */
-export async function isSoundCloud(url) {
+export function isSoundCloud(url) {
     if (url.endsWith('/')) url = url.substring(0, url.length - 1);
     return /^https:\/\/soundcloud.com\/[^/]+\/([^/]+)$/g.test(url);
 }

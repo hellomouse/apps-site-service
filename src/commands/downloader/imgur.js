@@ -11,7 +11,7 @@ import { minifyHTML } from '../../util/url.js';
  * @param {string} url URL
  * @return {boolean} is the result imgur
  */
-export async function isImgur(url) {
+export function isImgur(url) {
     if (url.endsWith('/')) url = url.substring(0, url.length - 1);
     url = url.toLowerCase();
     return url.startsWith('https://imgur.com/a/') || url.startsWith('https://imgur.com/gallery/');

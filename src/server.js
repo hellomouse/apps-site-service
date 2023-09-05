@@ -7,6 +7,7 @@ import { commandHtml } from './commands/html.js';
 import { commandPdf } from './commands/pdf.js';
 import { commandScreenshot } from './commands/screenshot.js';
 import { commandPinPreview } from './commands/preview.js';
+import { commandMedia } from './commands/special_download.js';
 
 const CHANNEL = 'hellomouse_apps_site_update'; // Should match NOTIFY on rust side
 const connectionString = `postgresql://${dbUser}:${dbPassword}@${dbIp}:${dbPort}/${dbName}`;
@@ -23,9 +24,7 @@ const COMMANDS = {
     'pdf': commandPdf,
     'html': commandHtml,
     'screenshot': commandScreenshot,
-    'media': async data => {
-
-    }
+    'media': commandMedia
 };
 
 // Create clients

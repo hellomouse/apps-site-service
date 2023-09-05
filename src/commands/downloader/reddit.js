@@ -65,7 +65,7 @@ video, img {
  * @param {string} url URL
  * @return {boolean} is the result reddit
  */
-export async function isRedditPost(url) {
+export function isRedditPost(url) {
     return /^https:\/\/www\.reddit\.com\/r\/.+?\/comments\/.+?\/.+?\/$/g.test(url);
 }
 
@@ -74,7 +74,7 @@ export async function isRedditPost(url) {
  * @param {string} url URL
  * @return {boolean} is the result reddit
  */
-export async function isRedditComment(url) {
+export function isRedditComment(url) {
     return /^https:\/\/www\.reddit\.com\/r\/.+?\/comments\/.+?\/comment\/.+?\/.+?$/g.test(url);
 }
 

@@ -11,7 +11,7 @@ import { createDirIfNotExist } from '../../util/file.js';
  * @param {string} url URL
  * @return {boolean} is the result newgrounds
  */
-export async function isNewgrounds(url) {
+export function isNewgrounds(url) {
     if (url.endsWith('/')) url = url.substring(0, url.length - 1);
     return /^https:\/\/www\.newgrounds\.com\/audio\/listen\/\d+$/g.test(url);
 }
