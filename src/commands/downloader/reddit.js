@@ -55,6 +55,10 @@ video, img {
     width: 100%;
     object-fit: contain;
 }
+iframe {
+    display: block;
+    margin: 10px auto;
+}
 .badges { margin: 0; margin-top: 5px; }
 .badges > span { border: 1px solid #343536; opacity: 0.7; padding: 2px 4px; margin-right: 2px; }
 .badges > span.nsfw { color:red; border-color: red; opacity: 1; }
@@ -114,11 +118,14 @@ export async function downloadRedditPost(url, dest, id) {
                 media += `<p>${item.caption}</p>`;
             i += 1;
         }
-    } else if (data.url)
+    } else if (data.media && data.media.oembed)
+        media = unescapeHtml(data.media.oembed.html);
+    else if (data.url)
         try {
             let ext = data.url.split('?')[0].split('.').at(-1);
             let filename = `${id}-img.${ext}`;
-            await https.get(data.url, resp => resp.pipe(fs.createWriteStream(path.join(dest, filename))));
+            await https.get(data.url, resp => resp.pipe(fs.createWriteStream(path.join(dest, filename))
+                .error(e => {})));
             media = `<img src="${filename}" loading="lazy">`;
         } catch (e) {
             // Ignore in case url is invalid
