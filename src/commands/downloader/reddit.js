@@ -91,7 +91,7 @@ export function isRedditComment(url) {
 export async function downloadRedditPost(url, dest, id) {
     if (url.endsWith('/'))
         url = url.substring(0, url.length - 1);
-    const response = await fetch('https://api.reddit.com/api/info/?id=t3_' + url.split('/').at(-2));
+    const response = await fetch('https://api.reddit.com/api/info/?id=t3_' + url.split('/').at(-2) + '&raw_json=1');
     let data = await response.json();
     data = data.data.children[0].data;
 
@@ -119,13 +119,18 @@ export async function downloadRedditPost(url, dest, id) {
             i += 1;
         }
     } else if (data.media && data.media.oembed)
-        media = unescapeHtml(data.media.oembed.html);
+        media = data.media.oembed.html;
     else if (data.url)
         try {
             let ext = data.url.split('?')[0].split('.').at(-1);
+            if (ext.includes('/') || ext.includes('.'))
+                throw new Error('Invalid file to download');
+            if (!['jpg', 'jpeg', 'jpeg:large', 'jpg:large', 'png', 'gif', 'bmp', 'webp'].includes(ext))
+                throw new Error('Not an image');
+
             let filename = `${id}-img.${ext}`;
-            await https.get(data.url, resp => resp.pipe(fs.createWriteStream(path.join(dest, filename))
-                .error(e => {})));
+            let resp = await https.get(data.url);
+            await resp.pipe(fs.createWriteStream(path.join(dest, filename)));
             media = `<img src="${filename}" loading="lazy">`;
         } catch (e) {
             // Ignore in case url is invalid
@@ -152,7 +157,7 @@ export async function downloadRedditPost(url, dest, id) {
 
             <div id="m" class="${data.spoiler ? 'spoiler' : ''}">
             ${media}
-            ${unescapeHtml(data.selftext_html || '')}
+            ${data.selftext_html || ''}
             </div>
 
             <div class="stats">
@@ -180,7 +185,7 @@ export async function downloadRedditPost(url, dest, id) {
 export async function downloadRedditComment(url, dest, id) {
     if (url.endsWith('/'))
         url = url.substring(0, url.length - 1);
-    const response = await fetch('https://api.reddit.com/api/info/?id=t1_' + url.split('/').at(-2));
+    const response = await fetch('https://api.reddit.com/api/info/?id=t1_' + url.split('/').at(-2) + '&raw_json=1');
     let data = await response.json();
     data = data.data.children[0].data;
 
@@ -193,7 +198,7 @@ export async function downloadRedditComment(url, dest, id) {
     <body>
         <div class="container">
             <p class="top"><b>${data.subreddit_name_prefixed}</b> <span class="rest">Comment by u/${data.author || '[deleted]'} on ${(new Date(data.created * 1000)).toLocaleString('en-US')}</span></p>
-            ${unescapeHtml(data.body_html || '')}
+            ${data.body_html || ''}
             <div class="stats">
                 +${data.ups} / -${data.downs} / Original comment can be found <a href="${data.permalink}">here</a> /
                 This Reddit comment was archived by Hellomouse Apps
