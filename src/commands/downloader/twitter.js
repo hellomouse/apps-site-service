@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import https from 'https';
 
 import getTwitterMedia from '../../util/twitter.js';
 import { createDirIfNotExist } from '../../util/file.js';
@@ -23,20 +24,21 @@ export async function isTwitter(url) {
  */
 export async function downloadTwitter(url, dest, id) {
     let result = await getTwitterMedia(url, {
-        buffer: true,
+        buffer: false,
         text: true
     });
 
-    let data = '';
+    let [data, i] = ['', 0];
     for (let media of result.media) {
         let ext = media.url.split('?')[0].split('.').at(-1);
+        let filename = `${id}-${i}.${ext}`;
+        await https.get(media.url, resp => resp.pipe(fs.createWriteStream(path.join(dest, filename))));
+
         if (media.type === 'image')
-            data += `<img src="data:${ext};base64,` + media.buffer.toString('base64') + '">';
+            data += `<img src="${filename}" loading="lazy">`;
         else if (media.type === 'video')
-            data += `
-    <video controls>
-        <source type="video/${ext}" src="data:video/${ext};base64,${media.buffer.toString('base64')}">
-    </video>`;
+            data += `<video controls><source type="video/${ext}" src="${filename}"></video>`;
+        i += 1;
     }
 
     createDirIfNotExist(path.join(dest, 'tmp.tmp'));
