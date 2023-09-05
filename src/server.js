@@ -5,6 +5,7 @@ import log from 'simple-node-logger';
 import { dbUser, dbPassword, dbIp, dbPort, dbName } from '../config.js';
 import { commandHtml } from './commands/html.js';
 import { commandPdf } from './commands/pdf.js';
+import { commandScreenshot } from './commands/screenshot.js';
 import { commandPinPreview } from './commands/preview.js';
 
 const CHANNEL = 'hellomouse_apps_site_update'; // Should match NOTIFY on rust side
@@ -21,6 +22,7 @@ const COMMANDS = {
     'pin_preview': commandPinPreview,
     'pdf': commandPdf,
     'html': commandHtml,
+    'screenshot': commandScreenshot,
     'media': async data => {
 
     }
