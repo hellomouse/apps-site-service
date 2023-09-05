@@ -27,7 +27,7 @@ export async function downloadWEBP(url, dest) {
             x: 0,
             y: 0,
             width: page.viewport().width,
-            height: height
+            height: Math.max(1080, height)
         },
         optimizeForSpeed: true
     });
