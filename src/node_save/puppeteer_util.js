@@ -1,11 +1,15 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker';
 
 // eslint-disable-next-line new-cap
 const stealthPlugin = StealthPlugin();
 stealthPlugin.enabledEvasions.delete('iframe.contentWindow');
 stealthPlugin.enabledEvasions.delete('navigator.plugins');
 puppeteer.use(stealthPlugin);
+
+// eslint-disable-next-line new-cap
+puppeteer.use(AdblockerPlugin());
 
 export const waitTillHTMLRendered = async (page, timeout = 30000) => {
     const checkDurationMsecs = 1000;
