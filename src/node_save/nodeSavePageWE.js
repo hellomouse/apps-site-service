@@ -13,6 +13,7 @@
 /** */
 import fs from 'fs';
 import { EventEmitter } from 'events';
+import DOMPurify from 'isomorphic-dompurify';
 import { waitTillHTMLRendered, getBrowserAndPage } from '../node_save/puppeteer_util.js';
 
 EventEmitter.defaultMaxListeners = 50;
@@ -44,6 +45,18 @@ export async function scrape(task) {
             break;
         await snooze(100);
     }
+
+    // Sanitize & embed in iframe
+    savedPageHTML = DOMPurify.sanitize(savedPageHTML, { WHOLE_DOCUMENT: true });
+    savedPageHTML = savedPageHTML.replace(/&/g, '&amp;amp;').replace(/"/g, '&quot;');
+    savedPageHTML = `
+    <head><meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <style>
+        body, html: { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        div { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+    </style></head><body>
+    <div><iframe  width="100%" height="100%" frameborder="0" seamless sandbox srcdoc="${savedPageHTML}"/></div></body>
+    `;
 
     // now inject resources back into page
     fs.writeFileSync(task.path, savedPageHTML);

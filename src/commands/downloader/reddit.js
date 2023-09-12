@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import https from 'https';
 import fetch from 'node-fetch';
+import DOMPurify from 'isomorphic-dompurify';
 
 import { createDirIfNotExist } from '../../util/file.js';
 import { minifyHTML, unescapeHtml } from '../../util/url.js';
@@ -172,6 +173,7 @@ export async function downloadRedditPost(url, dest, id) {
         </script>` : ''}
     </body>
 </html>`;
+    HTML = DOMPurify.sanitize(HTML, { WHOLE_DOCUMENT: true });
     HTML = minifyHTML(HTML);
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
 }
@@ -206,6 +208,7 @@ export async function downloadRedditComment(url, dest, id) {
         </div>
     </body>
 </html>`;
+    HTML = DOMPurify.sanitize(HTML, { WHOLE_DOCUMENT: true });
     HTML = minifyHTML(HTML);
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
 }

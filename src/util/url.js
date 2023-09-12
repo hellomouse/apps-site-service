@@ -20,6 +20,9 @@ export function validateUrl(url) {
  * @param {string} dest Destination for image
  */
 export async function downloadImage(url, size, dest) {
+    if (url.startsWith('//'))
+        url = 'https:' + url;
+
     const response = await fetch(url, {
         method: 'GET',
         size: 10e6 // 10 MB

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import https from 'https';
+import DOMPurify from 'isomorphic-dompurify';
 
 import getTwitterMedia from '../../util/twitter.js';
 import { createDirIfNotExist } from '../../util/file.js';
@@ -78,6 +79,7 @@ img, video { width: 100%; display: block; margin-bottom: 5px; }
         </div>
     </body>
 </html>`;
+    HTML = DOMPurify.sanitize(HTML, { WHOLE_DOCUMENT: true });
     HTML = minifyHTML(HTML);
 
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);

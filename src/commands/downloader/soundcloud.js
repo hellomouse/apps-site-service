@@ -2,6 +2,7 @@ import SoundCloud from 'soundcloud-scraper';
 import fs from 'fs';
 import path from 'path';
 import https from 'https';
+import DOMPurify from 'isomorphic-dompurify';
 
 import { minifyHTML } from '../../util/url.js';
 import { createDirIfNotExist } from '../../util/file.js';
@@ -164,6 +165,7 @@ h3 {
         </div>
     </body>
 </html>`;
+    HTML = DOMPurify.sanitize(HTML, { WHOLE_DOCUMENT: true });
     HTML = minifyHTML(HTML);
 
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);

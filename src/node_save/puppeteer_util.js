@@ -36,7 +36,7 @@ export const waitTillHTMLRendered = async (page, timeout = 30000) => {
 
 export const getBrowserAndPage = async () => {
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: 'new',
         args: [
             '--disable-features=BlockInsecurePrivateNetworkRequests',
             '--disable-features=IsolateOrigins',
