@@ -8,6 +8,7 @@ import { createDirIfNotExist } from '../../util/file.js';
 import { minifyHTML, unescapeHtml } from '../../util/url.js';
 
 const HEAD = `<meta charset="UTF-8">
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Reddit Backup</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">

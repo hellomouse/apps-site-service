@@ -50,7 +50,7 @@ export async function scrape(task) {
     savedPageHTML = DOMPurify.sanitize(savedPageHTML, { WHOLE_DOCUMENT: true });
     savedPageHTML = savedPageHTML.replace(/&/g, '&amp;amp;').replace(/"/g, '&quot;');
     savedPageHTML = `
-    <head><meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <head><meta content='width=device-width, initial-scale=1.0' name='viewport'><meta charset="UTF-8">
     <style>
         body, html: { margin: 0; padding: 0; height: 100%; overflow: hidden; }
         div { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
