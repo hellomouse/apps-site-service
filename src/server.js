@@ -68,7 +68,6 @@ async function processQueue() {
         }
 
         queueAlreadyAdded.delete(toProcess.id);
-        await client.query('DELETE FROM site.queue WHERE id = $1;', [toProcess.id]);
         await client.query('UPDATE site.status SET finished = $1, status = $2 WHERE id = $3;',
             [
                 new Date(),
@@ -82,10 +81,10 @@ async function processQueue() {
 
 /** Add from DB to the queue */
 async function updateQueue() {
-    const rows = (await client.query(`SELECT * FROM site.queue ORDER BY priority desc, created asc;`)).rows;
+    const rows = (await client.query(`SELECT * FROM site.status WHERE status = 'queued' ORDER BY priority desc, created asc;`)).rows;
     if (!rows || rows.length === 0) return;
 
-    for (let row of rows) // TODO: don't duplicate
+    for (let row of rows)
         if (!queueAlreadyAdded.has(row.id)) {
             queueAlreadyAdded.add(row.id);
             queue.push(row);
