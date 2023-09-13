@@ -1,6 +1,7 @@
 import sharp from 'sharp';
 import fs from 'fs';
 import minifier from 'html-minifier';
+import { escape, unescape } from 'html-escaper';
 import { createDirIfNotExist } from './file.js';
 
 /**
@@ -42,8 +43,8 @@ export async function downloadImage(url, size, dest) {
 /**
  * Returns a hash code from a string, should be same as
  * the client's hash function
- * @param  {String} str The string to hash.
- * @return {String}     Hash of url
+ * @param  {string} str The string to hash.
+ * @return {string}     Hash of url
  * @see http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
  */
 export function urlHash(str) {
@@ -63,12 +64,7 @@ export function urlHash(str) {
  * @return {string} Text with escaped HTML
  */
 export function escapeHtml(text) {
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    return escape(text);
 }
 
 
@@ -78,12 +74,7 @@ export function escapeHtml(text) {
  * @return {string} Text with unescaped HTML
  */
 export function unescapeHtml(text) {
-    return text
-        .replaceAll('&amp;', '&')
-        .replaceAll('&lt;', '<')
-        .replaceAll('&gt;', '>')
-        .replaceAll('&quot;', '"')
-        .replaceAll('&#039;', '\'');
+    return unescape(text);
 }
 
 
