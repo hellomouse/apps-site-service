@@ -92,8 +92,9 @@ async function updateQueue() {
     processQueue();
 }
 
-/** Clear finished tasks older than 1 hour */
+/** Clear finished tasks older than 1 hour and "stuck in processing" tasks made 2 or more days ago */
 async function clearOldFinishedTasks() {
+    await client.query(`DELETE FROM site.status WHERE (status = 'processing') AND created < now() - interval '2 day';`);
     await client.query(`DELETE FROM site.status WHERE (status = 'errored' OR status = 'completed') AND finished < now() - interval '1 hour';`);
 }
 
