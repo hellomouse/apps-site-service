@@ -27,7 +27,7 @@ export function getBilibiliId(url) {
  * Command to export
  * @param {object} data Data from DB
  * @param {object} client DB Client
- * @return {string} VideoID result is stored at
+ * @return {Array} result of DB adding
  */
 export async function commandVideo(data, client) {
     validateUrl(data.data);
@@ -39,8 +39,7 @@ export async function commandVideo(data, client) {
         videoId = `yt#${yId}`;
         let jsonPath = path.join(fileDir, 'videos', videoId);
         await downloadYoutube(yId, jsonPath);
-        await addVideoMetaToDb(jsonPath, videoId, client);
-        return videoId;
+        return await addVideoMetaToDb(jsonPath, videoId, client);
     }
 
     let bId = getBilibiliId(data.data);
@@ -48,8 +47,7 @@ export async function commandVideo(data, client) {
         videoId = `bilibili#${bId}`;
         let jsonPath = path.join(fileDir, 'videos', videoId);
         await downloadBilibili(bId, jsonPath);
-        await addVideoMetaToDb(jsonPath, videoId, client);
-        return videoId;
+        return await addVideoMetaToDb(jsonPath, videoId, client);
     }
     throw new Error('Could not find youtube or bilibili ID');
 }

@@ -16,7 +16,7 @@ export async function downloadYoutube(id, dest) {
     let url = `https://www.youtube.com/watch?v=${id}`;
     await ytDlpWrap.execPromise([
         url,
-        '--download-archive', 'yt-dlp/downloaded.txt',
+        // '--download-archive', 'yt-dlp/downloaded.txt',
         '--no-post-overwrites', '--quiet',
         '--write-thumbnail', '--write-info-json',
         '--cookies', 'yt-dlp/yt-cookies.txt',
@@ -42,7 +42,7 @@ export async function downloadBilibili(id, dest) {
     let url = `https://www.bilibili.com/video/${id}`;
     await ytDlpWrap.execPromise([
         url,
-        '--download-archive', 'yt-dlp/downloaded.txt',
+        // '--download-archive', 'yt-dlp/downloaded.txt',
         '--no-post-overwrites', '--quiet',
         '--write-thumbnail', '--write-info-json',
         '--cookies', 'yt-dlp/bilibili-cookies.txt',
@@ -69,12 +69,16 @@ export async function addVideoMetaToDb(jsonPath, videoId, client) {
             .includes(f.split('.').at(-1).toLowerCase()))[0] || '';
     let subtitleFiles = files.filter(f => f.startsWith('subs.'));
 
+    let timestamp = (data['timestamp'] || data['release_timestamp']);
+    timestamp = timestamp ? new Date(timestamp * 1000) :
+        new Date(+data['upload_date'].substring(0, 4), +data['upload_date'].substring(4, 6) - 1, +data['upload_date'].substring(6, 8));
+
     let params = [
         videoId,
         data['uploader'],
-        data['uploader_id'],
+        data['uploader_id'] || 'Unknown id',
         data['uploader_url'] || '',
-        new Date((data['timestamp'] || data['release_timestamp']) * 1000),
+        timestamp,
         data['fulltitle'],
         data['duration_string'],
         data['description'] || 'No description provided',
@@ -93,15 +97,7 @@ export async function addVideoMetaToDb(jsonPath, videoId, client) {
                 description, view_count, comment_count, like_count, filesize, tags,
                 thumbnail_file, video_file, subtitle_files)
             VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-            ON CONFLICT (id) DO UPDATE SET
-                title = EXCLUDED.title,
-                description = EXCLUDED.description,
-                upload_date = EXCLUDED.upload_date,
-                view_count = EXCLUDED.view_count,
-                comment_count = EXCLUDED.comment_count,
-                like_count = EXCLUDED.comment_count,
-                tags = EXCLUDED.tags,
-                subtitle_files = EXCLUDED.subtitle_files;`, params);
+            ON CONFLICT (id) DO NOTHING;`, params);
     fs.unlinkSync(path.join(jsonPath, 'output.info.json'));
     return params;
 }
