@@ -120,7 +120,7 @@ async function clearOldFinishedTasks() {
 }
 
 subscriber.notifications.on(CHANNEL, async () => {
-    updateQueue();
+    setTimeout(updateQueue, 500);
 });
 
 subscriber.events.on('error', error => {
