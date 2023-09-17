@@ -8,6 +8,7 @@ import { commandPdf } from './commands/pdf.js';
 import { commandScreenshot } from './commands/screenshot.js';
 import { commandPinPreview } from './commands/preview.js';
 import { commandMedia } from './commands/special_download.js';
+import { commandVideo } from './commands/video.js';
 
 import { errorDoNothing, errorPdf, errorScreenshot, errorHtml } from './commands/errors.js';
 
@@ -25,7 +26,8 @@ const COMMANDS = {
     'pdf': commandPdf,
     'html': commandHtml,
     'screenshot': commandScreenshot,
-    'media': commandMedia
+    'media': commandMedia,
+    'video_download': commandVideo
 };
 
 const COMMAND_ERROR = {
@@ -33,7 +35,8 @@ const COMMAND_ERROR = {
     'pdf': errorPdf,
     'html': errorHtml,
     'screenshot': errorScreenshot,
-    'media': errorHtml
+    'media': errorHtml,
+    'video_download': errorDoNothing
 };
 
 // Create clients
@@ -136,7 +139,30 @@ async function connect() {
     await client.connect();
     await subscriber.connect();
     await subscriber.listenTo(CHANNEL);
+
     logger.info('Connected to DB, listening...');
+
+    // Create necessary tables
+    await client.query(`CREATE TABLE IF NOT EXISTS video_meta (
+            id text NOT NULL PRIMARY KEY,
+            uploader TEXT NOT NULL,
+            uploader_id TEXT NOT NULL,
+            uploader_url TEXT NOT NULL,
+            upload_date timestamptz NOT NULL,
+            title TEXT NOT NULL,
+            duration_string TEXT NOT NULL,
+            description TEXT NOT NULL,
+            view_count INTEGER NOT NULL,
+            comment_count INTEGER NOT NULL,
+            like_count INTEGER NOT NULL,
+            filesize INTEGER NOT NULL,
+            tags TEXT[] NOT NULL,
+            thumbnail_file TEXT NOT NULL,
+            video_file TEXT NOT NULL,
+            subtitle_files TEXT[] NOT NULL
+        );`);
+
+    // Listen
     updateQueue();
     setInterval(clearOldFinishedTasks, 10 * 60 * 1000); // Clear old finished tasks every 10 min
 }

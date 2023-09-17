@@ -40,6 +40,9 @@ export const dbName = 'hellomouse_board';  // Postgres Server DB name
 export const fileDir = './saves';          // Path to store all files, in general, web files are stored under this path/site_downloads/file.ext
 ```
 
+To setup yt-dlp (optional) you can place your browser cookies in `yt-dlp/yt-cookies.txt` for use in downloading youtube videos, and 
+`yt-dlp/bilibili-cookies.txt` for downloading bilibili videos.
+
 
 Run the server:
 ```
