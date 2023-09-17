@@ -69,17 +69,16 @@ img, video { width: 100%; display: block; margin-bottom: 5px; }
         </style>
     </head>
     <body>
-        <div class="container">
+        ${DOMPurify.sanitize(`<div class="container">
             <p class="author"><b>${result.authorName}</b><span class="light">@${result.authorUsername} ${result.date}</span></p>
             <p class="text">${result.text}</p>
             ${data}
 
             <br>
             <span class="stats">${result.replies} Replies / ${result.retweets} Retweets / ${result.likes} Likes</span>
-        </div>
+        </div>`)}
     </body>
 </html>`;
-    HTML = DOMPurify.sanitize(HTML, { WHOLE_DOCUMENT: true });
     HTML = minifyHTML(HTML);
 
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);

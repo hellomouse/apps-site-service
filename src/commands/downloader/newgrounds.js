@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import https from 'https';
 import DOMPurify from 'isomorphic-dompurify';
 
-import { minifyHTML } from '../../util/url.js';
+import { escapeHtml, minifyHTML } from '../../util/url.js';
 import { createDirIfNotExist } from '../../util/file.js';
 
 /**
@@ -47,7 +47,7 @@ export async function downloadNewgrounds(url, dest, id) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Newgrounds Backup - ${songTitle}</title>
+        <title>Newgrounds Backup - ${escapeHtml(songTitle)}</title>
         <style>
 body {
     background: black;
@@ -88,6 +88,7 @@ h1 {
         </style>
     </head>
     <body>
+        ${DOMPurify.sanitize(`
         <h1>${songTitle}</h1>
         <div class="container">
             <audio controls>
@@ -96,10 +97,9 @@ h1 {
             <p>${songComments}</p>
             <small>This is a Newgrounds song backup generated from Hellomouse Apps</small>
         </div>
+        `)}
     </body>
 </html>`;
-    HTML = DOMPurify.sanitize(HTML, { WHOLE_DOCUMENT: true });
     HTML = minifyHTML(HTML);
-
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
 }

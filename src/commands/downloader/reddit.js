@@ -151,6 +151,7 @@ export async function downloadRedditPost(url, dest, id) {
         ${HEAD}
     </head>
     <body>
+        ${DOMPurify.sanitize(`
         <div class="container">
             <p class="top"><b>${data.subreddit_name_prefixed}</b> <span class="rest">Posted by u/${data.author || '[deleted]'} on ${(new Date(data.created * 1000)).toLocaleString('en-US')}</span></p>
             <h1>${data.title}</h1>
@@ -172,9 +173,9 @@ export async function downloadRedditPost(url, dest, id) {
             let m = document.getElementById('m');
             m.addEventListener('click', () => m.classList.remove('spoiler'))
         </script>` : ''}
+        `)}
     </body>
 </html>`;
-    HTML = DOMPurify.sanitize(HTML, { WHOLE_DOCUMENT: true });
     HTML = minifyHTML(HTML);
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
 }
@@ -199,6 +200,7 @@ export async function downloadRedditComment(url, dest, id) {
 <html>
     <head>${HEAD}</head>
     <body>
+        ${DOMPurify.sanitize(`
         <div class="container">
             <p class="top"><b>${data.subreddit_name_prefixed}</b> <span class="rest">Comment by u/${data.author || '[deleted]'} on ${(new Date(data.created * 1000)).toLocaleString('en-US')}</span></p>
             ${data.body_html || ''}
@@ -207,9 +209,9 @@ export async function downloadRedditComment(url, dest, id) {
                 This Reddit comment was archived by Hellomouse Apps
             </div>
         </div>
+        `)}
     </body>
 </html>`;
-    HTML = DOMPurify.sanitize(HTML, { WHOLE_DOCUMENT: true });
     HTML = minifyHTML(HTML);
     fs.writeFileSync(path.join(dest, id + '.html'), HTML);
 }
