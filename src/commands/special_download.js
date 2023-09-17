@@ -10,6 +10,7 @@ import { isRedditPost, isRedditComment, downloadRedditPost, downloadRedditCommen
 
 import path from 'path';
 import { downloadYoutube, isYoutube } from './downloader/youtube.js';
+import { isBilibili, downloadBilibili } from './downloader/bilibili.js';
 
 /**
  * Command to export
@@ -33,6 +34,8 @@ export async function commandMedia(data, client) {
         await downloadRedditComment(data.data, dest, data.id);
     else if (isYoutube(data.data))
         await downloadYoutube(data.data, dest, data.id, client);
+    else if (isBilibili(data.data))
+        await downloadBilibili(data.data, dest, data.id, client);
     else
         await downloadHtml(data.data, path.join(fileDir, 'site_downloads', data.id + '.html'));
 }

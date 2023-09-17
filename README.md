@@ -10,9 +10,9 @@ A fun Microservice for scraping stuff from sites for Hellomouse Apps
    - **Soundcloud:** Songs are downloaded with metadata (HTML + audio)
    - **Newgrounds:** Songs are downloaded with metadata (HTML + audio)
    - **Imgur:** Albums and gallerys are downloaded with all images and metadata (HTML + images / videos)
-   - **Youtube:** Videos are downloaded (Soon)
+   - **Youtube:** Videos are downloaded
    - **Pixiv:** Albums are downloaded (Soon)
-   - **Bilibili:** Videos are downloaded (Soon)
+   - **Bilibili:** Videos are downloaded
 
 ## Built With
 * ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
