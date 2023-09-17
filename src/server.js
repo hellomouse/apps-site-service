@@ -16,8 +16,7 @@ const connectionString = `postgresql://${dbUser}:${dbPassword}@${dbIp}:${dbPort}
 const logger = log.createSimpleLogger();
 
 // Queue
-const queue = [];
-let queueRunning = false;
+let queueRunning = [false, false];
 let queueAlreadyAdded = new Set();
 
 // Commands
@@ -41,17 +40,20 @@ const COMMAND_ERROR = {
 const subscriber = createSubscriber({ connectionString });
 const client = new pg.Client({ connectionString });
 
-/** Queue process loop */
-async function processQueue() {
-    if (queueRunning) return;
-    queueRunning = true;
+/**
+ * Queue process loop
+ * @param {Array} queue Queue to process
+ * @param {number} queueRunningIndex Index of task group in queueRunning
+ */
+async function processQueue(queue, queueRunningIndex) {
+    if (queueRunning[queueRunningIndex]) return;
+    queueRunning[queueRunningIndex] = true;
     while (queue.length > 0) {
         const toProcess = queue.shift();
         const cmd = toProcess.name;
         logger.info(`Processing command ${cmd} ${toProcess.data} from ${toProcess.requestor}`);
 
-        await client.query('UPDATE site.status SET status = $1 WHERE id = $2;',
-            ['processing', toProcess.id]);
+        await client.query('UPDATE site.status SET status = $1 WHERE id = $2;', ['processing', toProcess.id]);
         let errored = false;
 
         try {
@@ -76,20 +78,36 @@ async function processQueue() {
             ]
         );
     }
-    queueRunning = false;
+    queueRunning[queueRunningIndex] = false;
 }
 
-/** Add from DB to the queue */
-async function updateQueue() {
-    const rows = (await client.query(`SELECT * FROM site.status WHERE status = 'queued' ORDER BY priority desc, created asc;`)).rows;
-    if (!rows || rows.length === 0) return;
+/**
+ * Get queue
+ * @param {boolean} preview only get preview tasks? if false only gets non-preview tasks
+ * @return {Array} queue
+ */
+async function getQueue(preview) {
+    const queue = [];
+    const query = preview ?
+        `SELECT * FROM site.status WHERE status = 'queued' AND name = 'pin_preview'  ORDER BY priority desc, created asc;` :
+        `SELECT * FROM site.status WHERE status = 'queued' AND name != 'pin_preview' ORDER BY priority desc, created asc;`;
+    const rows = (await client.query(query)).rows;
+    if (!rows || rows.length === 0) return [];
 
     for (let row of rows)
         if (!queueAlreadyAdded.has(row.id)) {
             queueAlreadyAdded.add(row.id);
             queue.push(row);
         }
-    processQueue();
+    return queue;
+}
+
+/** Add from DB to the queue */
+async function updateQueue() {
+    let queue1 = await getQueue(true);
+    let queue2 = await getQueue(false);
+    processQueue(queue1, 0);
+    processQueue(queue2, 1);
 }
 
 /** Clear finished tasks older than 1 hour and "stuck in processing" tasks made 2 or more days ago */
