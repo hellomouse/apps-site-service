@@ -63,10 +63,10 @@ export async function addVideoMetaToDb(jsonPath, videoId, client) {
     let files = fs.readdirSync(jsonPath);
 
     let thumbnailFile = files.filter(f => ['webp', 'png', 'jpg', 'gif', 'jpeg', 'bmp', 'svg']
-        .includes(f.split('.').at(-1).toLowerCase()))[0] || '';
+        .includes(f.split('.').at(-1).toLowerCase()) && f.split('.').length <= 2)[0] || '';
     let videoFile = files.filter(f =>
         ['mp4', 'mov', 'webm', 'wmv', 'avi', 'flv', 'mkv', 'mts', 'm4v', 'mpg', 'mpeg', 'ts', 'm2p', 'asf', '3gp']
-            .includes(f.split('.').at(-1).toLowerCase()))[0] || '';
+            .includes(f.split('.').at(-1).toLowerCase()) && f.split('.').length <= 2)[0] || '';
     let subtitleFiles = files.filter(f => f.startsWith('subs.'));
 
     let timestamp = (data['timestamp'] || data['release_timestamp']);
