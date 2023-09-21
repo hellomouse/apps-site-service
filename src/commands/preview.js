@@ -55,9 +55,9 @@ export async function commandPinPreview(data, client) {
     let newContent = pin.content.split('\n');
     while (newContent.length < 5)
         newContent.push('');
-    newContent[2] = preview.image;
-    newContent[3] = preview.title;
-    newContent[4] = preview.desc;
+    newContent[2] = preview.image.replaceAll('\n', ' ').replaceAll('\r', '');
+    newContent[3] = preview.title.replaceAll('\n', ' ').replaceAll('\r', '');
+    newContent[4] = preview.desc.replaceAll('\n', ' ').replaceAll('\r', '');
     newContent = newContent.join('\n');
 
     if (preview.image)

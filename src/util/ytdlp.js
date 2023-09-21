@@ -19,6 +19,7 @@ export async function downloadYoutube(id, dest) {
         // '--download-archive', 'yt-dlp/downloaded.txt',
         '--no-post-overwrites', '--quiet',
         '--write-thumbnail', '--write-info-json',
+        '-S', 'vcodec:h264',
         '--cookies', 'yt-dlp/yt-cookies.txt',
         '-f', 'bestvideo[height<=720]+bestaudio',
         '-o', path.join(dest, 'output.%(ext)s')
@@ -45,6 +46,7 @@ export async function downloadBilibili(id, dest) {
         // '--download-archive', 'yt-dlp/downloaded.txt',
         '--no-post-overwrites', '--quiet',
         '--write-thumbnail', '--write-info-json',
+        '-S', 'vcodec:h264',
         '--cookies', 'yt-dlp/bilibili-cookies.txt',
         '-f', 'bestvideo[height<=720]+bestaudio',
         '-o', path.join(dest, 'output.%(ext)s')
