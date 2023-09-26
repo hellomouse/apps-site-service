@@ -7,10 +7,11 @@ save/
 
 # Yt-dlp
 yt-dlp.*
-./yt-dlp
-yt-dlp/yt-cookies.txt
-yt-dlp/bilibili-cookies.txt
-yt-dlp/downloaded.txt
+./secret
+secret/yt-cookies.txt
+secret/bilibili-cookies.txt
+secret/downloaded.txt
+secret/pixiv-cookies.txt
 
 # Logs
 logs

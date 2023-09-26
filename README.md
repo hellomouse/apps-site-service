@@ -11,7 +11,7 @@ A fun Microservice for scraping stuff from sites for Hellomouse Apps
    - **Newgrounds:** Songs are downloaded with metadata (HTML + audio)
    - **Imgur:** Albums and gallerys are downloaded with all images and metadata (HTML + images / videos)
    - **Youtube:** Videos are downloaded
-   - **Pixiv:** Albums are downloaded (Soon)
+   - **Pixiv:** Albums are downloaded
    - **Bilibili:** Videos are downloaded
 
 ## Built With
@@ -40,8 +40,10 @@ export const dbName = 'hellomouse_board';  // Postgres Server DB name
 export const fileDir = './saves';          // Path to store all files, in general, web files are stored under this path/site_downloads/file.ext
 ```
 
-To setup yt-dlp (optional) you can place your browser cookies in `yt-dlp/yt-cookies.txt` for use in downloading youtube videos, and 
-`yt-dlp/bilibili-cookies.txt` for downloading bilibili videos.
+To setup yt-dlp (optional) you can place your browser cookies in `secret/yt-cookies.txt` for use in downloading youtube videos, and 
+`secret/bilibili-cookies.txt` for downloading bilibili videos.
+
+To setup pixiv cookies (optional, for bypassing rate limiting and age restrictions) you can place your browser cookies (exported as a JS array of objects like `[{ name: ... }])`) and put the result in `secret/pixiv-cookies.txt`.
 
 
 Run the server:

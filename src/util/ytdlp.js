@@ -16,18 +16,18 @@ export async function downloadYoutube(id, dest) {
     let url = `https://www.youtube.com/watch?v=${id}`;
     await ytDlpWrap.execPromise([
         url,
-        // '--download-archive', 'yt-dlp/downloaded.txt',
+        // '--download-archive', 'secret/downloaded.txt',
         '--no-post-overwrites', '--quiet',
         '--write-thumbnail', '--write-info-json',
         '-S', 'vcodec:h264',
-        '--cookies', 'yt-dlp/yt-cookies.txt',
+        '--cookies', 'secret/yt-cookies.txt',
         '-f', 'bestvideo[height<=720]+bestaudio',
         '-o', path.join(dest, 'output.%(ext)s')
     ]);
     await ytDlpWrap.execPromise([
         url,
         '--no-post-overwrites', '--quiet',
-        '--cookies', 'yt-dlp/yt-cookies.txt',
+        '--cookies', 'secret/yt-cookies.txt',
         '--sub-langs', 'all,-live_chat', '--write-subs',
         '--skip-download',
         '-o', path.join(dest, 'subs.%(ext)s')
@@ -43,11 +43,11 @@ export async function downloadBilibili(id, dest) {
     let url = `https://www.bilibili.com/video/${id}`;
     await ytDlpWrap.execPromise([
         url,
-        // '--download-archive', 'yt-dlp/downloaded.txt',
+        // '--download-archive', 'secret/downloaded.txt',
         '--no-post-overwrites', '--quiet',
         '--write-thumbnail', '--write-info-json',
         '-S', 'vcodec:h264',
-        '--cookies', 'yt-dlp/bilibili-cookies.txt',
+        '--cookies', 'secret/bilibili-cookies.txt',
         '-f', 'bestvideo[height<=720]+bestaudio',
         '-o', path.join(dest, 'output.%(ext)s')
     ]);
