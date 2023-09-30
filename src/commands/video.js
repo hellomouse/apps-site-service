@@ -19,6 +19,11 @@ export function getYoutubeId(url) {
  * @return {string} ID or '' if not found
  */
 export function getBilibiliId(url) {
+    if (url.includes('/list/')) {
+        let possibleId = url.split('&bvid=')[1].split('&')[0];
+        return possibleId.length ? possibleId : '';
+    }
+
     let match = url.match(/https?:\/\/www\.bilibili\.com\/video\/([A-Za-z0-9-_]+)(\/|\?)?/);
     return (match && match[1]) ? match[1] : '';
 }

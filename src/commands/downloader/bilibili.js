@@ -15,7 +15,8 @@ export function isBilibili(url) {
     if (url.endsWith('/')) url = url.substring(0, url.length - 1);
     url = url.toLowerCase();
     return (url.startsWith('https://www.bilibili.com/video/') ||
-        url.startsWith('https://bilibili.com/video/')) && getBilibiliId(url);
+        url.startsWith('https://bilibili.com/video/') ||
+        url.startsWith('https://www.bilibili.com/list/')) && getBilibiliId(url);
 }
 
 /**

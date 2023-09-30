@@ -7,11 +7,11 @@ import { isNewgrounds, downloadNewgrounds } from './downloader/newgrounds.js';
 import { isSoundCloud, downloadSoundCloud } from './downloader/soundcloud.js';
 import { isTwitter, downloadTwitter } from './downloader/twitter.js';
 import { isRedditPost, isRedditComment, downloadRedditPost, downloadRedditComment } from './downloader/reddit.js';
-
-import path from 'path';
 import { downloadYoutube, isYoutube } from './downloader/youtube.js';
 import { isBilibili, downloadBilibili } from './downloader/bilibili.js';
 import { isPixiv, downloadPixiv } from './downloader/pixiv.js';
+
+import path from 'path';
 
 /**
  * Command to export

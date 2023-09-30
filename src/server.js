@@ -9,6 +9,7 @@ import { commandScreenshot } from './commands/screenshot.js';
 import { commandPinPreview } from './commands/preview.js';
 import { commandMedia } from './commands/special_download.js';
 import { commandVideo } from './commands/video.js';
+import { commandAddMusicToPlaylist } from './commands/music.js';
 
 import { errorDoNothing, errorPdf, errorScreenshot, errorHtml } from './commands/errors.js';
 
@@ -27,7 +28,8 @@ const COMMANDS = {
     'html': commandHtml,
     'screenshot': commandScreenshot,
     'media': commandMedia,
-    'video_download': commandVideo
+    'video_download': commandVideo,
+    'music_add_urls_to_playlist': commandAddMusicToPlaylist
 };
 
 const COMMAND_ERROR = {
@@ -36,7 +38,8 @@ const COMMAND_ERROR = {
     'html': errorHtml,
     'screenshot': errorScreenshot,
     'media': errorHtml,
-    'video_download': errorDoNothing
+    'video_download': errorDoNothing,
+    'music_add_urls_to_playlist': errorDoNothing
 };
 
 // Create clients

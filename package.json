@@ -33,6 +33,7 @@
     "sharp": "^0.32.5",
     "simple-node-logger": "^21.8.12",
     "soundcloud-scraper": "^5.0.3",
+    "uuid": "^9.0.1",
     "yt-dlp-wrap": "^2.3.12"
   }
 }
