@@ -30,7 +30,7 @@
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-adblocker": "^2.13.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "sharp": "^0.32.5",
+    "sharp": "^0.32.6",
     "simple-node-logger": "^21.8.12",
     "soundcloud-scraper": "^5.0.3",
     "uuid": "^9.0.1",

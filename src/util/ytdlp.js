@@ -19,7 +19,7 @@ export async function downloadYoutube(id, dest) {
         // '--download-archive', 'secret/downloaded.txt',
         '--no-post-overwrites', '--quiet',
         '--write-thumbnail', '--write-info-json',
-        '-S', 'vcodec:h264',
+        '-S', 'res,ext:mp4:m4a', '--recode', 'mp4',
         '--cookies', 'secret/yt-cookies.txt',
         '-f', 'bestvideo[height<=720]+bestaudio',
         '-o', path.join(dest, 'output.%(ext)s')
@@ -69,7 +69,8 @@ export async function addVideoMetaToDb(jsonPath, videoId, client) {
     let videoFile = files.filter(f =>
         ['mp4', 'mov', 'webm', 'wmv', 'avi', 'flv', 'mkv', 'mts', 'm4v', 'mpg', 'mpeg', 'ts', 'm2p', 'asf', '3gp']
             .includes(f.split('.').at(-1).toLowerCase()) && f.split('.').length <= 2)[0] || '';
-    let subtitleFiles = files.filter(f => f.startsWith('subs.'));
+    // Exclude Bilibili xml intermediate format as browsers can't parse it
+    let subtitleFiles = files.filter(f => f.startsWith('subs.') && !f.endsWith('.xml'));
 
     let timestamp = (data['timestamp'] || data['release_timestamp']);
     timestamp = timestamp ? new Date(timestamp * 1000) :
